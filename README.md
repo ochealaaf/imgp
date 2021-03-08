@@ -58,6 +58,7 @@ Powered by multiprocessing, SIMD parallelism (thanks to the Pillow-SIMD library)
 - force smaller to larger resize
 - process directories recursively
 - overwrite source image option
+- preserve original date and time
 - completion scripts for bash, fish, zsh
 - minimal dependencies
 
@@ -145,7 +146,7 @@ Shell completion scripts for Bash, Fish and Zsh can be found in respective subdi
 
 ```
 usage: imgp [-h] [-x res] [-o deg] [-a] [-c] [-e] [-f] [-H] [-i] [-k] [-m] [-M res]
-            [-n] [-N] [-O] [-P] [-q N] [-r] [-s byte] [-w] [-d] [PATH [PATH ...]]
+            [-n] [-N] [-O] [-p] [-P] [-q N] [-r] [-s byte] [-w] [-d] [PATH [PATH ...]]
 
 Resize, rotate JPEG and PNG images.
 
@@ -169,6 +170,7 @@ optional arguments:
   -n, --enlarge         enlarge smaller images [default: off]
   -N, --nearest         use nearest neighbour interpolation for PNG [default: antialias]
   -O, --optimize        optimize the output images [default: off]
+  -p, --preservedate    preserve date of original file [default:off]
   -P, --progressive     save JPEG images as progressive [default: off]
   -q N, --quality N     quality factor (N=1-95, JPEG only) [default: 75]
   -r, --recurse         process non-symbolic dirs recursively [default: off]
