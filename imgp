@@ -35,6 +35,7 @@ adapt = False  # use adaptive resolution
 convert = False  # convert PNG to JPG
 hidden = False  # process hidden files
 eraseexif = False  # erase EXIF metadata
+preservedate = False # preserve date of file(s) when overwriting
 progressive = False  # save as a progressive image
 force = False  # forced to exact specified resolution
 includeimgp = False  # process _IMGP files
@@ -138,6 +139,7 @@ def rotate_image(src):
     try:
         img = Image.open(src)
         _format = img.format
+        stat = os.stat(src)
 
         if _format not in ['JPEG', 'PNG', 'MPO']:
             if debug:
@@ -195,6 +197,9 @@ def rotate_image(src):
 
     try:
         img.save(dest, _format, quality=qual, optimize=optimal, exif=exifdata, progressive=_progressive)
+        
+        if preservedate:
+            os.utime(dest, (stat.st_atime, stat.st_mtime))
 
         if not mute:
             lock_print('%s %ld bytes\n' % (stats, os.path.getsize(dest)))
@@ -222,6 +227,7 @@ def resize_image(src):
     try:
         img = Image.open(src)
         _format = img.format
+        stat = os.stat(src)
 
         if _format not in ['JPEG', 'PNG', 'MPO']:
             if debug:
@@ -439,6 +445,9 @@ def resize_image(src):
 
     try:
         img.save(dest, _format, quality=qual, optimize=optimal, exif=exifdata, progressive=_progressive)
+        
+        if preservedate:
+            os.utime(dest, (stat.st_atime, stat.st_mtime))
 
         if not mute:
             lock_print('%s %ld bytes\n' % (stats, os.path.getsize(dest)))
@@ -521,6 +530,8 @@ def parse_args(args=None, namespace=None):
            help='use nearest neighbour interpolation for PNG [default: antialias]')
     addarg('-O', '--optimize', action='store_true',
            help='optimize the output images [default: off]')
+    addarg('-p', '--preservedate', action='store_true',
+           help='preserve file data [default: off]')
     addarg('-P', '--progressive', action='store_true',
            help='save JPEG images as progressive [default: off]')
     addarg('-q', '--quality', type=int, metavar='N', choices=range(1, 96),
@@ -545,7 +556,7 @@ def parse_args(args=None, namespace=None):
 
 
 def main():
-    global HRES, VRES, scale, rotate, adapt, convert, hidden, eraseexif, force, \
+    global HRES, VRES, scale, rotate, adapt, convert, hidden, eraseexif, preservedate, force, \
            includeimgp, keep, enlarge, optimal, progressive, mute, recurse, size, \
            qual, overwrite, debug, no_res_opt, pool, init_time, count, png_ip, minH, minV
 
@@ -622,6 +633,7 @@ def main():
     convert = args.convert
     hidden = args.hidden
     eraseexif = args.eraseexif
+    preservedate = args.preservedate
     force = args.force
     includeimgp = args.includeimgp
     keep = args.keep
